@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAPTCHA-Herausforderung</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+        }
+        .captcha {
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .message {
+            margin-top: 20px;
+        }
+        .star {
+            font-size: 24px;
+            color: gold;
+        }
+        #puzzle {
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        #answer {
+            width: 200px;
+            padding: 5px;
+            margin: 10px 0;
+        }
+        .opposite-day {
+            position: absolute;
+            bottom: 5px;
+            right: 10px;
+            font-size: 8px;
+            color: #999;
+        }
+        #progress {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CAPTCHA <span class="star">★</span></h1>
+        <p><strong>Ich bin kein Roboter</strong></p>
+        <div class="captcha">
+            <p id="puzzle"></p>
+            <input type="text" id="answer" placeholder="Deine Antwort">
+            <button onclick="checkAnswer()">Bestätigen</button>
+        </div>
+        <p id="progress"></p>
+        <p class="message" id="result"></p>
+        <span class="opposite-day">Gegenteilstag</span>
+    </div>
+
+    <script>
+        const puzzles = [
+            {
+                question: "Berechne 9876543210 / 123456789 in 0,1 Sekunden.",
+                answer: "80.00000001"
+            },
+            {
+                question: "Zähle alle Primzahlen zwischen 1 und 1.000.000 auf.",
+                answer: "78498"
+            },
+            {
+                question: "Löse das Traveling Salesman Problem für 100 Städte in unter einer Sekunde.",
+                answer: "Optimal"
+            },
+            {
+                question: "Sortiere 1 Million zufällige Zahlen in aufsteigender Reihenfolge.",
+                answer: "Sortiert"
+            },
+            {
+                question: "Berechne die ersten 1000 Stellen von Pi.",
+                answer: "3.141592653589793..."
+            },
+            {
+                question: "Finde den kürzesten Weg durch ein Labyrinth mit 1.000.000 Zellen.",
+                answer: "Gefunden"
+            },
+            {
+                question: "Führe eine Fourier-Transformation auf einem 1GB großen Audiosignal durch.",
+                answer: "Transformiert"
+            },
+            {
+                question: "Generiere 1000 einzigartige Sudoku-Rätsel in 5 Sekunden.",
+                answer: "Generiert"
+            },
+            {
+                question: "Berechne die 1.000.000-te Fibonacci-Zahl.",
+                answer: "1953282128707757..."
+            },
+            {
+                question: "Löse eine nichtlineare partielle Differentialgleichung in 3D.",
+                answer: "Gelöst"
+            }
+        ];
+
+        let currentPuzzleIndex = 0;
+
+        function displayPuzzle() {
+            document.getElementById('puzzle').textContent = puzzles[currentPuzzleIndex].question;
+            document.getElementById('progress').textContent = `Rätsel ${currentPuzzleIndex + 1} von ${puzzles.length}`;
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answer').value.trim().toLowerCase();
+            const correctAnswer = puzzles[currentPuzzleIndex].answer.toLowerCase();
+
+            let start = performance.now();
+            let end = performance.now();
+            let time = end - start;
+
+            if (currentPuzzleIndex === 0 && (userAnswer === correctAnswer && time < 100)) {
+                document.getElementById('result').innerText = "Hmm, das war verdächtig schnell und korrekt. Nächste Frage...";
+                nextPuzzle();
+            } else if (currentPuzzleIndex === 1) {
+                document.getElementById('result').innerText = "Gratulation! Du hast bewiesen, dass du kein Roboter bist!";
+                endTest(true);
+            } else {
+                document.getElementById('result').innerText = "Fehler: Du scheinst ein Roboter zu sein. Versuche, menschlicher zu antworten!";
+                nextPuzzle();
+            }
+        }
+
+        function nextPuzzle() {
+            currentPuzzleIndex++;
+            if (currentPuzzleIndex < puzzles.length) {
+                displayPuzzle();
+                document.getElementById('answer').value = '';
+            } else {
+                endTest(false);
+            }
+        }
+
+        function endTest(success) {
+            if (success) {
+                document.getElementById('puzzle').textContent = "Test bestanden! Du bist definitiv kein Roboter.";
+            } else {
+                document.getElementById('puzzle').textContent = "Test fehlgeschlagen. Du bist wahrscheinlich ein Roboter!";
+            }
+            document.getElementById('answer').style.display = 'none';
+            document.querySelector('button').style.display = 'none';
+            document.getElementById('progress').style.display = 'none';
+        }
+
+        displayPuzzle();
+    </script>
+</body>
+</html>
