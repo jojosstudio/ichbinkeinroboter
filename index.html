@@ -135,15 +135,30 @@
             let end = performance.now();
             let time = end - start;
 
-            if (currentPuzzleIndex === 0 && (userAnswer === correctAnswer && time < 100)) {
-                document.getElementById('result').innerText = "Hmm, das war verdächtig schnell und korrekt. Nächste Frage...";
-                nextPuzzle();
+            if (currentPuzzleIndex === 0) {
+                if (userAnswer === correctAnswer && time < 100) {
+                    document.getElementById('result').innerText = "Hmm, das war verdächtig schnell und korrekt. Nächste Frage...";
+                    nextPuzzle();
+                } else {
+                    document.getElementById('result').innerText = "Falsch oder zu langsam. Nächste Frage...";
+                    nextPuzzle();
+                }
             } else if (currentPuzzleIndex === 1) {
-                document.getElementById('result').innerText = "Gratulation! Du hast bewiesen, dass du kein Roboter bist!";
-                endTest(true);
+                if (userAnswer !== correctAnswer || time >= 100) {
+                    document.getElementById('result').innerText = "Gratulation! Du hast bewiesen, dass du kein Roboter bist!";
+                    endTest(true);
+                } else {
+                    document.getElementById('result').innerText = "Das war zu schnell und zu präzise. Bist du sicher, dass du kein Roboter bist?";
+                    nextPuzzle();
+                }
             } else {
-                document.getElementById('result').innerText = "Fehler: Du scheinst ein Roboter zu sein. Versuche, menschlicher zu antworten!";
-                nextPuzzle();
+                if (userAnswer === correctAnswer && time < 100) {
+                    document.getElementById('result').innerText = "Fehler: Du scheinst ein Roboter zu sein. Versuche, menschlicher zu antworten!";
+                    nextPuzzle();
+                } else {
+                    document.getElementById('result').innerText = "Falsch oder zu langsam. Nächste Frage...";
+                    nextPuzzle();
+                }
             }
         }
 
