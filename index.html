@@ -79,7 +79,7 @@
     <script>
         const puzzles = [
             {
-                question: "Berechne 9876543210 / 123456789 in 0,1 Sekunden.",
+                question: "Berechne 9876543210 / 123456789.",
                 answer: "80.00000001"
             },
             {
@@ -131,33 +131,22 @@
             const userAnswer = document.getElementById('answer').value.trim().toLowerCase();
             const correctAnswer = puzzles[currentPuzzleIndex].answer.toLowerCase();
 
-            let start = performance.now();
-            let end = performance.now();
-            let time = end - start;
-
-            if (currentPuzzleIndex === 0) {
-                if (userAnswer === correctAnswer && time < 100) {
-                    document.getElementById('result').innerText = "Hmm, das war verdächtig schnell und korrekt. Nächste Frage...";
-                    nextPuzzle();
-                } else {
-                    document.getElementById('result').innerText = "Falsch oder zu langsam. Nächste Frage...";
-                    nextPuzzle();
-                }
-            } else if (currentPuzzleIndex === 1) {
-                if (userAnswer !== correctAnswer || time >= 100) {
+            if (currentPuzzleIndex === 3) {
+                // Vierte Frage (Index 3): Hier "bestehen" wir den Test, wenn die Antwort falsch ist
+                if (userAnswer !== correctAnswer) {
                     document.getElementById('result').innerText = "Gratulation! Du hast bewiesen, dass du kein Roboter bist!";
                     endTest(true);
                 } else {
-                    document.getElementById('result').innerText = "Das war zu schnell und zu präzise. Bist du sicher, dass du kein Roboter bist?";
+                    document.getElementById('result').innerText = "Das war zu präzise. Bist du sicher, dass du kein Roboter bist?";
                     nextPuzzle();
                 }
             } else {
-                if (userAnswer === correctAnswer && time < 100) {
-                    document.getElementById('result').innerText = "Fehler: Du scheinst ein Roboter zu sein. Versuche, menschlicher zu antworten!";
+                // Für alle anderen Fragen, einschließlich der ersten
+                if (userAnswer === correctAnswer) {
+                    document.getElementById('result').innerText = "Korrekt. Nächste Frage...";
                     nextPuzzle();
                 } else {
-                    document.getElementById('result').innerText = "Falsch oder zu langsam. Nächste Frage...";
-                    nextPuzzle();
+                    document.getElementById('result').innerText = "Falsch. Versuche es nochmal oder gehe zur nächsten Frage.";
                 }
             }
         }
